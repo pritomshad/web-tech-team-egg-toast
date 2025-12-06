@@ -23,5 +23,5 @@ client = motor.motor_asyncio.AsyncIOMotorClient(
     socketTimeoutMS=30000
 )
 
-db = client["team-egg-toast"]  # database name
+db = client["quizDB"]  # database name
 subjects_collection = db["subjects"]

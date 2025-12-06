@@ -23,3 +23,24 @@ async def add_question(subject_id: str, lesson_index: int, question: Question):
     )
 
     return {"message": "Question added successfully"}
+
+@router.get("/subjects/{subject_id}/lessons/{lesson_index}/questions")
+async def get_questions(subject_id: str, lesson_index: int):
+    subject = await subjects_collection.find_one({"subjectId": subject_id})
+
+    if not subject:
+        raise HTTPException(status_code=404, detail="Subject not found")
+
+    if lesson_index < 0 or lesson_index >= len(subject["lessons"]):
+        raise HTTPException(status_code=400, detail="Invalid lesson index")
+
+    # Get questions from the specific lesson
+    questions = subject["lessons"][lesson_index]["questions"]
+
+    return {
+        "message": "Questions retrieved successfully",
+        "subject_id": subject_id,
+        "lesson_index": lesson_index,
+        "questions": questions,
+        "total_questions": len(questions)
+    }

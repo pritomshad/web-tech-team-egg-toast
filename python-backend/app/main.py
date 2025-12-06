@@ -3,6 +3,7 @@ from fastapi import FastAPI
 # from app.user.router import api_router as user_router
 from app.api.api_router import api_router as ai_api_router
 from app.question_update.question_router import question_router as question_router  # <- note change here
+from app.subject_update.subject_router import subject_router as subject_router
 # from app.analysis.prediction_router import api_router as prediction_router
 # from app.applications.apply_router import api_router as apply_router
 # from app.qrcode.qr_router import api_router as qr_router
@@ -20,6 +21,7 @@ app = FastAPI(title="My FastAPI App")
 # include the AI routes under /api
 app.include_router(ai_api_router, prefix="/api")
 app.include_router(question_router, prefix="/question")
+app.include_router(subject_router, prefix="/subject")
 # app.include_router(qr_router, prefix="/qrcode")
 # app.include_router(ai_api_router, prefix="/api")
 
