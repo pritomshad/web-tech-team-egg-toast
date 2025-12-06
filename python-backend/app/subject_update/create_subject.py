@@ -2,10 +2,16 @@ from fastapi import APIRouter, HTTPException
 from ..models import Subject
 from ..database import subjects_collection
 from bson import ObjectId
+from pydantic import BaseModel
+from typing import Optional
 
 router = APIRouter()
 
-@router.post("/subjects")
+class CreateSubjectResponse(BaseModel):
+    message: str
+    subject_id: Optional[str] = None
+
+@router.post("/subjects", response_model=CreateSubjectResponse)
 async def create_subject(subject: Subject):
     # Check if subject with the same subjectId already exists
     existing_subject = await subjects_collection.find_one({"subjectId": subject.subjectId})

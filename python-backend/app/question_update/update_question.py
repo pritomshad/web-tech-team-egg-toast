@@ -2,8 +2,22 @@ from fastapi import APIRouter, HTTPException
 from ..models import Question
 from ..database import subjects_collection
 from bson import ObjectId
+from pydantic import BaseModel
+from typing import List
+
 router = APIRouter()
-@router.post("/subjects/{subject_id}/lessons/{lesson_index}/questions")
+
+class AddQuestionResponse(BaseModel):
+    message: str
+
+class GetQuestionsResponse(BaseModel):
+    message: str
+    subject_id: str
+    lesson_index: int
+    questions: List[dict]
+    total_questions: int
+
+@router.post("/subjects/{subject_id}/lessons/{lesson_index}/questions", response_model=AddQuestionResponse)
 async def add_question(subject_id: str, lesson_index: int, question: Question):
     subject = await subjects_collection.find_one({"subjectId": subject_id})
 
@@ -24,7 +38,7 @@ async def add_question(subject_id: str, lesson_index: int, question: Question):
 
     return {"message": "Question added successfully"}
 
-@router.get("/subjects/{subject_id}/lessons/{lesson_index}/questions")
+@router.get("/subjects/{subject_id}/lessons/{lesson_index}/questions", response_model=GetQuestionsResponse)
 async def get_questions(subject_id: str, lesson_index: int):
     subject = await subjects_collection.find_one({"subjectId": subject_id})
 
