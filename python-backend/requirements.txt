@@ -4,6 +4,5 @@ motor
 pymongo
 python-dotenv
 pydantic
-perplexity
 anyio
 PyPDF2
