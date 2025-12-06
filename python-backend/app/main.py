@@ -49,3 +49,8 @@ async def read_root():
 async def read_item(item_id: int, q: str | None = None):
     print("request recieved sucessfully")
     return {"item_id": 3, "q": 2}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
