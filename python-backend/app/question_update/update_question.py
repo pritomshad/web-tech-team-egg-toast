@@ -4,6 +4,8 @@ from ..database import subjects_collection
 from bson import ObjectId
 from pydantic import BaseModel
 from typing import List
+import json
+from datetime import datetime
 
 router = APIRouter()
 
@@ -16,6 +18,28 @@ class GetQuestionsResponse(BaseModel):
     lesson_index: int
     questions: List[dict]
     total_questions: int
+
+# Helper function to convert MongoDB documents to JSON-serializable format
+def convert_mongo_document(doc):
+    """Convert MongoDB document with ObjectIds and dates to JSON-serializable format"""
+    if isinstance(doc, dict):
+        result = {}
+        for key, value in doc.items():
+            if isinstance(value, ObjectId):
+                result[key] = str(value)
+            elif isinstance(value, datetime):
+                result[key] = value.isoformat()
+            elif isinstance(value, list):
+                result[key] = [convert_mongo_document(item) for item in value]
+            elif isinstance(value, dict):
+                result[key] = convert_mongo_document(value)
+            else:
+                result[key] = value
+        return result
+    elif isinstance(doc, list):
+        return [convert_mongo_document(item) for item in doc]
+    else:
+        return doc
 
 @router.post("/subjects/{subject_id}/lessons/{lesson_index}/questions", response_model=AddQuestionResponse)
 async def add_question(subject_id: str, lesson_index: int, question: Question):
@@ -50,11 +74,17 @@ async def get_questions(subject_id: str, lesson_index: int):
 
     # Get questions from the specific lesson
     questions = subject["lessons"][lesson_index]["questions"]
+    
+    # Process questions to convert MongoDB-specific types to JSON-serializable format
+    processed_questions = []
+    for question in questions:
+        processed_question = convert_mongo_document(question)
+        processed_questions.append(processed_question)
 
     return {
         "message": "Questions retrieved successfully",
         "subject_id": subject_id,
         "lesson_index": lesson_index,
-        "questions": questions,
-        "total_questions": len(questions)
+        "questions": processed_questions,
+        "total_questions": len(processed_questions)
     }
