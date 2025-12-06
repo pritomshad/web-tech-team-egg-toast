@@ -4,6 +4,8 @@ from ..database import subjects_collection
 from bson import ObjectId
 from pydantic import BaseModel
 from typing import Optional, List
+from datetime import datetime
+import json
 
 router = APIRouter()
 
@@ -11,15 +13,37 @@ class CreateSubjectResponse(BaseModel):
     message: str
     subject_id: Optional[str] = None
 
-class SubjectItem(BaseModel):
+class SubjectItemSummary(BaseModel):
     subjectId: str
     title: str
-    lessons: List[dict]
+    lesson_count: int  # Just return count instead of full lessons
 
 class GetAllSubjectsResponse(BaseModel):
     message: str
-    subjects: List[SubjectItem]
+    subjects: List[SubjectItemSummary]
     total_subjects: int
+
+# Helper function to convert MongoDB documents to JSON-serializable format
+def convert_mongo_document(doc):
+    """Convert MongoDB document with ObjectIds and dates to JSON-serializable format"""
+    if isinstance(doc, dict):
+        result = {}
+        for key, value in doc.items():
+            if isinstance(value, ObjectId):
+                result[key] = str(value)
+            elif isinstance(value, datetime):
+                result[key] = value.isoformat()
+            elif isinstance(value, list):
+                result[key] = [convert_mongo_document(item) for item in value]
+            elif isinstance(value, dict):
+                result[key] = convert_mongo_document(value)
+            else:
+                result[key] = value
+        return result
+    elif isinstance(doc, list):
+        return [convert_mongo_document(item) for item in doc]
+    else:
+        return doc
 
 @router.post("/subjects", response_model=CreateSubjectResponse)
 async def create_subject(subject: Subject):
@@ -43,13 +67,15 @@ async def get_all_subjects():
     # Fetch all subjects from the collection
     subjects = []
     async for subject in subjects_collection.find({}):
-        # Remove ObjectId and convert to string if needed
+        # Get the count of lessons instead of the full lessons to avoid ObjectId serialization issues
+        lesson_count = len(subject.get("lessons", []))
+
         subject_data = {
             "subjectId": subject.get("subjectId", ""),
             "title": subject.get("title", ""),
-            "lessons": subject.get("lessons", [])
+            "lesson_count": lesson_count
         }
-        subjects.append(SubjectItem(**subject_data))
+        subjects.append(SubjectItemSummary(**subject_data))
 
     return {
         "message": "Subjects retrieved successfully",
