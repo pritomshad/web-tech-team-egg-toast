@@ -1,0 +1,14 @@
+services:
+  quiz-app:
+    build: .
+    image: pritomash/quiz-app:latest
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY}
+    # You can uncomment the following line to use a .env file
+    # env_file: .env
