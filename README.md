@@ -4,9 +4,23 @@
 
 ## Description
 
-Tik-Tik is a modern, generic quiz application built with the MERN stack (MongoDB, Express.js, React, Node.js) and enhanced with Python-based AI capabilities. Originally based on a Japanese learning app, it has been transformed into a dynamic platform where users can take quizzes on various subjects or generate their own quizzes from PDF documents using AI.
+Tik-Tik is a modern, generic quiz application built with the MERN stack (MongoDB, Express.js, React, Node.js) and enhanced with Python-based AI capabilities. Ir has been transformed into a dynamic platform where users can take quizzes on various subjects or generate their own quizzes from PDF documents using AI.
 
 Key features include a timed quiz mode with unique questions, a practice mode for lessons, and an AI-powered quiz generator that creates multiple-choice questions from uploaded lecture notes or textbooks.
+
+Teachers can also add questions from the teacher portal, assign lessons, and view student metrics.
+
+## Links to Tik-Tik
+**Student Portal: https://tik-tik-quiz.netlify.app/lessons** <<======================================
+
+
+<img width="1905" height="957" alt="image" src="https://github.com/user-attachments/assets/175acb6e-c29c-47f9-adde-40488186b184" />
+
+**Teacher Portal: https://teacher-launch.vercel.app/**  <<======================================
+
+
+<img width="1919" height="947" alt="image" src="https://github.com/user-attachments/assets/bb3d62d7-ef2b-482c-aebb-132aaebcc6c7" />
+
 
 ## Table of Contents
 
@@ -124,7 +138,12 @@ The application is fully dockerized for easy deployment.
 ### AI & Tools
 -   [Google Gemini API](https://ai.google.dev/)
 -   [Perplexity API](https://docs.perplexity.ai/)
+
+### Deployment
 -   [Docker](https://www.docker.com/)
+-   [Render.com](https://render.com/)
+-   [Vercel](https://vercel.com/)
+-   [Netlify](https://www.netlify.com/)
 
 ## Contributing
 
